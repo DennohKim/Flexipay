@@ -3,20 +3,20 @@ import { baseSepolia } from 'viem/chains'
 import payrollAbi from '@/config/payrollAbi'
 import { readContracts, readContract } from '@wagmi/core'
 import { config } from '@/config'
-import { Address, Employee, Organization } from '@/state/types'
+import { Address, Freelancer, Organization } from '@/state/types'
 import { PAYROLL_CONTRACT_ADDRESS } from '@/config/constants'
 
-export async function fetchEmployees(employeeAddresses: readonly `0x${string}`[]) {
+export async function fetchFreelancers(freelancerAddresses: readonly `0x${string}`[]) {
   const results = await readContracts(config, {
-    contracts: employeeAddresses.map((employeeAddress) => ({
+    contracts: freelancerAddresses.map((freelancerAddress) => ({
       chainId: baseSepolia.id,
       abi: payrollAbi,
-      functionName: 'getEmployee',
-      args: [employeeAddress],
+      functionName: 'getFreelancer',
+      args: [freelancerAddress],
       address: PAYROLL_CONTRACT_ADDRESS,
     })),
   })
-  console.log('fetchEmployees', results)
+  console.log('fetchFreelancers', results)
 
   return results
     .filter((result) => result.status === 'success')
@@ -26,36 +26,34 @@ export async function fetchEmployees(employeeAddresses: readonly `0x${string}`[]
       return {
         address: r[0],
         orgAddress: r[1],
-        verified: Boolean(r[3]),
-        salary: Number(r[4]),
+        payout: Number(r[4]),
         activity: r[5],
         daysWorked: Number(r[6]),
         latestPayReceived: Number(r[7]),
         openBalance: Number(r[8]),
-      } as Employee
+      } as Freelancer
     })
 }
 
-export async function fetchEmployee(address: `0x${string}`) {
+export async function fetchFreelancer(address: `0x${string}`) {
   console.log('fetch', address)
 
   const result = await readContract(config, {
     chainId: baseSepolia.id,
     abi: payrollAbi,
-    functionName: 'getEmployee',
+    functionName: 'getFreelancer',
     args: [address],
     address: PAYROLL_CONTRACT_ADDRESS,
   })
 
-  console.log('fetchEmployee', result)
+  console.log('fetchFreelancer', result)
   return {
-    address: result.employeeAddress,
+    address: result.freelancerAddress,
     orgAddress: result.companyAddress,
-    salary: Number(result.dailyWageWei),
-    verified: Boolean(result.worldidverified),
+    payout: Number(result.dailyWageWei),
     activity: result.activity,
     daysWorked: Number(result.daysWorked),
-  } as Employee
+  } as Freelancer
 }
 
 export async function fetchOrganization(address: Address) {

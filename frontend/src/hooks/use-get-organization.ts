@@ -7,7 +7,7 @@ const useGetOrganization = (address: `0x${string}`) => {
   const { data, isLoading, isSuccess, refetch } = useReadContract({
     chainId: baseSepolia.id,
     abi: payrollAbi,
-    functionName: 'getCompany',
+    functionName: 'getBusinessEntity',
     args: [address],
     address: PAYROLL_CONTRACT_ADDRESS,
   })

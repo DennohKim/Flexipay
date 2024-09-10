@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { Button, Paper } from '@mui/material'
-import { fetchEmployee } from '@/services/read-services'
-import { Employee } from '@/state/types'
+import { fetchFreelancer } from '@/services/read-services'
+import { Freelancer } from '@/state/types'
 import { formatEther } from 'viem'
 import Iconify from '@/components/iconify'
 import { paySalary } from '@/services/write-services'
@@ -17,8 +17,8 @@ type Props = {
   address: `0x${string}`
 }
 
-export default function EmployeeInformation({ address }: Props) {
-  const [employeeInfo, setEmployeeInfo] = useState<Employee | undefined>(undefined);
+export default function FreelancerInformation({ address }: Props) {
+  const [freelancerInfo, setFreelancerInfo] = useState<Freelancer | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
 
   const { data: ensName } = useEnsName({
@@ -31,31 +31,31 @@ export default function EmployeeInformation({ address }: Props) {
   })
 
   useEffect(() => {
-    const loadEmployeeInfo = async () => {
+    const loadFreelancerInfo = async () => {
       try {
-        const employee = await fetchEmployee(address)
-        setEmployeeInfo(employee)
+        const Freelancer = await fetchFreelancer(address)
+        setFreelancerInfo(Freelancer)
       } catch (error) {
-        console.error("Error fetching employee info:", error)
+        console.error("Error fetching Freelancer info:", error)
       } finally {
         setIsLoading(false)
       }
     }
 
-    loadEmployeeInfo()
+    loadFreelancerInfo()
   }, [address])
 
   if (isLoading) {
     return <div>Loading...</div>
   }
 
-  if (!employeeInfo) {
-    return <div>No employee information found.</div>
+  if (!freelancerInfo) {
+    return <div>No Freelancer information found.</div>
   }
 
   return (
     <div>
-      <div className="employeeContainer">
+      <div className="FreelancerContainer">
         <Box
           sx={{
             display: 'flex',
@@ -70,7 +70,7 @@ export default function EmployeeInformation({ address }: Props) {
         >
           <Paper elevation={24}>
             <div className="paper">
-              <div className="employeeUserSide">
+              <div className="FreelancerUserSide">
                 {/* <Paper elevation={24}>
                   <Box
                     component="img"
@@ -79,7 +79,7 @@ export default function EmployeeInformation({ address }: Props) {
                       width: 200,
                       boxShadow: 5,
                     }}
-                    alt="Employee avatar"
+                    alt="Freelancer avatar"
                     src={avatarUrl || "/loading.webp"}
                   />
                 </Paper> */}
@@ -88,26 +88,26 @@ export default function EmployeeInformation({ address }: Props) {
                   <p className="ensName">{ensName || address.substring(0, 15) + '...'}</p>
                 </div>
               </div>
-              <div className="employeeDataSide">
-                <div className="employeeData">
-                  <div className="employeeDataLabels">
-                    <ul className="employeeDataLabels">
+              <div className="FreelancerDataSide">
+                <div className="FreelancerData">
+                  <div className="FreelancerDataLabels">
+                    <ul className="FreelancerDataLabels">
                       <li>🗓️ Days worked:</li>
                       <li>💰 Day Wage:</li>
                       <li>⚙️ Activity:</li>
                     </ul>
                   </div>
-                  <div className="employeeDataValues">
-                    <ul className="employeeDataValues">
-                      <li>{employeeInfo.daysWorked}</li>
-                      <li>{formatEther(BigInt(employeeInfo.salary))} Ξ</li>
-                      <li>{employeeInfo.activity}</li>
+                  <div className="FreelancerDataValues">
+                    <ul className="FreelancerDataValues">
+                      <li>{freelancerInfo.daysWorked}</li>
+                      <li>{formatEther(BigInt(freelancerInfo.payout))} Ξ</li>
+                      <li>{freelancerInfo.activity}</li>
                     </ul>
                   </div>
                 </div>
                 <div className="totalBalance">
                   <p className="balancep">
-                    Balance: <span className="value">{formatEther(BigInt(employeeInfo.daysWorked * employeeInfo.salary))} Ξ</span>
+                    Balance: <span className="value">{formatEther(BigInt(freelancerInfo.daysWorked * freelancerInfo.payout))} Ξ</span>
                   </p>
                   <Button
                     style={{ minWidth: '200px', minHeight: '35px' }}

@@ -9,7 +9,7 @@ export async function createOrg(name: string) {
   const result = await writeContract(config, {
     chainId: baseSepolia.id,
     abi: payrollAbi,
-    functionName: 'addCompany',
+    functionName: 'addBusinessEntity',
     args: [name],
     address: PAYROLL_CONTRACT_ADDRESS,
   })
@@ -17,29 +17,18 @@ export async function createOrg(name: string) {
   return result
 }
 
-export async function addNewEmployee(address: Address, salary: number, activity: string) {
+export async function addNewFreelancer(address: Address, salary: number, activity: string) {
   const result = await writeContract(config, {
     chainId: baseSepolia.id,
     abi: payrollAbi,
-    functionName: 'addEmployee',
+    functionName: 'addFreelancer',
     args: [address, BigInt(salary), activity],
     address: PAYROLL_CONTRACT_ADDRESS,
   })
-  console.log('add new Employee transaction', result)
+  console.log('add new Freelancer transaction', result)
   return result
 }
 
-export async function verifyEmployee(address: Address) {
-  const result = await writeContract(config, {
-    chainId: baseSepolia.id,
-    abi: payrollAbi,
-    functionName: 'verifyEmployee',
-    args: [address],
-    address: PAYROLL_CONTRACT_ADDRESS,
-  })
-  console.log('verifying employee', result)
-  return result
-}
 
 export async function paySalary(address: Address) {
   const result = await writeContract(config, {
@@ -49,6 +38,6 @@ export async function paySalary(address: Address) {
     args: [address],
     address: PAYROLL_CONTRACT_ADDRESS,
   })
-  console.log('payout to employee', result)
+  console.log('payout to freelancer', result)
   return result
 }

@@ -5,11 +5,9 @@ import { useAppDispatch } from '@/state/hooks'
 import Box from '@mui/material/Box'
 import { Button, Stack, Grid, TextField, Typography } from '@mui/material'
 import { useAccount } from 'wagmi';
-// import WorldID from './WorldID'
-import EmployeeInformation from './EmployeeInformation'
-//import fetch from 'node-fetch'
+import FreelancerInformation from './FreelancerInformation'
 
-export default function EmployeeSection() {
+export default function FreelancerSection() {
   const { address } = useAccount()
 
 
@@ -26,7 +24,7 @@ export default function EmployeeSection() {
           Welcome
         </Typography>
 
-        <EmployeeInformation
+        <FreelancerInformation
           address={address}
         />
       </Stack>

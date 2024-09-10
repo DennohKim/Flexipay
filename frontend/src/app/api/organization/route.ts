@@ -1,3 +1,4 @@
+import { freelancer } from '@/state/types';
 
 
 export async function GET(req: Request) {
@@ -9,14 +10,14 @@ export async function GET(req: Request) {
         name: "",
         id: 0,
         balance: 0,
-        employees: []
+        freelancers: []
     }
 
     const fullResponse = {
         name: "ABC Organization",
         id: 7,
         balance: 1565,
-        employees: [
+        freelancers: [
             {
                 address: 0xabcdef,
                 salary: 230,

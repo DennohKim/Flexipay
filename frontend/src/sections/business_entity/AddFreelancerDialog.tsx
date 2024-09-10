@@ -15,7 +15,7 @@ import { ReturnType } from '@/hooks/use-boolean'
 import { Address, Organization } from '@/state/types'
 import { InputAdornment } from '@mui/material'
 import { useRef, useState } from 'react'
-import { addNewEmployee } from '@/services/write-services'
+import { addNewFreelancer } from '@/services/write-services'
 import { config } from '@/config'
 
 // ----------------------------------------------------------------------
@@ -25,8 +25,8 @@ type Props = {
   dialog: ReturnType
 }
 
-export default function AddEmployeeDialog({ organization, dialog }: Props) {
-  const [employeeAddress, setEmployeeAddress] = useState<string>('')
+export default function AddFreelancerDialog({ organization, dialog }: Props) {
+  const [freelancerAddress, setFreelancerAddress] = useState<string>('')
   const [addessOrEns, setAddessOrEns] = useState<string>('')
   const [salary, setSalary] = useState<number>()
   const [activity, setActivity] = useState<string>('')
@@ -35,22 +35,22 @@ export default function AddEmployeeDialog({ organization, dialog }: Props) {
   const [helperText, setHelperText] = useState('')
   const requestIdRef = useRef(0)
 
-  const onAddEmployee = async () => {
-    if (!employeeAddress || !salary || !activity) return
+  const onAddFreelancer = async () => {
+    if (!freelancerAddress || !salary || !activity) return
     try {
-      const tx = await addNewEmployee(employeeAddress as Address, salary * 1000000000000000000, activity)
-      toast.success(`Add employee transaction submitted. transaction: ${tx}`)
+      const tx = await addNewFreelancer(freelancerAddress as Address, salary * 1000000000000000000, activity)
+      toast.success(`Add freelancer transaction submitted. transaction: ${tx}`)
     } catch (err) {
-      toast.error(`Add employee: ${error}`)
+      toast.error(`Add freelancer: ${error}`)
     }
     dialog.onFalse()
   }
 
-  const onEmployeeAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFreelancerAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setAddessOrEns(value)
     if (value.startsWith('0x')) {
-      setEmployeeAddress(e.target.value)
+      setFreelancerAddress(e.target.value)
       setError(false)
       setHelperText('')
     } else {
@@ -65,11 +65,11 @@ export default function AddEmployeeDialog({ organization, dialog }: Props) {
       }).then((address) => {
         if (currentRequestId === requestIdRef.current) {
           if (!!address) {
-            setEmployeeAddress(address)
+            setFreelancerAddress(address)
             setError(false)
             setHelperText('')
           } else {
-            setEmployeeAddress('')
+            setFreelancerAddress('')
             setError(true)
             setHelperText('Invalid ENS')
           }
@@ -81,11 +81,11 @@ export default function AddEmployeeDialog({ organization, dialog }: Props) {
   return (
     <div>
       <Dialog open={dialog.value} onClose={dialog.onFalse}>
-        <DialogTitle>New Employee</DialogTitle>
+        <DialogTitle>New freelancer</DialogTitle>
 
         <DialogContent>
           <Typography sx={{ mb: 3 }}>
-            After adding an employee, they must verify their personhood with World ID before receiving payments.
+            After adding an freelancer, they must verify their personhood with World ID before receiving payments.
           </Typography>
 
           <TextField
@@ -98,15 +98,15 @@ export default function AddEmployeeDialog({ organization, dialog }: Props) {
             helperText={helperText}
             label="Wallet Address or ENS"
             value={addessOrEns}
-            onChange={onEmployeeAddressChange}
+            onChange={onFreelancerAddressChange}
           />
           <TextField
             autoFocus
             fullWidth
-            type="number"
+            type="text"
             margin="dense"
             variant="outlined"
-            label="Daily salary"
+            label="payout"
             value={salary}
             onChange={(e) => setSalary(Number(e.target.value))}
             InputProps={{
@@ -129,7 +129,7 @@ export default function AddEmployeeDialog({ organization, dialog }: Props) {
           <Button onClick={dialog.onFalse} variant="outlined" color="inherit">
             Cancel
           </Button>
-          <Button onClick={onAddEmployee} variant="contained">
+          <Button onClick={onAddFreelancer} variant="contained">
             Add
           </Button>
         </DialogActions>

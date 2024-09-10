@@ -5,7 +5,7 @@ import { ApolloProvider, AppStateProvider, Web3ModalProvider } from '@/context'
 import { ToastContainer } from 'react-toastify'
 import ThemeProvider from '@/theme'
 import './globals.css'
-import './employee.css'
+import './freelancer.css'
 import 'react-toastify/dist/ReactToastify.css'
 
 const inter = Inter({ subsets: ['latin'] })

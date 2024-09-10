@@ -9,12 +9,12 @@ import { useAccount } from 'wagmi'
 import { useEffect, useState } from 'react'
 import { selectOrganization, selectRole } from '@/state/selectors'
 import { useAppDispatch, useAppSelector } from '@/state/hooks'
-import CreateOrganization from '@/sections/employer/CreateOrganization'
-import OrganizationSection from '@/sections/employer/OrganizationSection'
-import EmployeeSection from '@/sections/employee/EmployeeSection'
+import CreateOrganization from '@/sections/business_entity/CreateOrganization'
+import OrganizationSection from '@/sections/business_entity/OrganizationSection'
 import { fetchOrganization } from '@/services/read-services'
 import { setOrganization } from '@/state/app'
 import { Divider } from '@mui/material'
+import FreelancerSection from '@/sections/freelancer/FreelancerSection'
 
 export default function Home() {
   const dispatch = useAppDispatch()
@@ -22,7 +22,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false)
   const role = useAppSelector(selectRole)
   const org = useAppSelector(selectOrganization)
-  const isEmployer = role === 'employer'
+  const isBusinessEntity = role === 'Business Entity'
 
   useEffect(() => {
     async function fetchData() {
@@ -66,13 +66,13 @@ export default function Home() {
           )}
           {isConnecting && <Typography textAlign={'center'}>Connecting...</Typography>}
           {loading && <Typography textAlign={'center'}>Loading...</Typography>}
-          {!loading && isEmployer && !!address && !org?.orgName && (
+          {!loading && isBusinessEntity && !!address && !org?.orgName && (
             <CreateOrganization address={address} />
           )}
-          {!loading && isEmployer && !!address && !!org?.orgName && (
+          {!loading && isBusinessEntity&& !!address && !!org?.orgName && (
             <OrganizationSection address={address} />
           )}
-          {!loading && !isEmployer && !isConnecting && !isDisconnected && <EmployeeSection />}
+          {!loading && !isBusinessEntity && !isConnecting && !isDisconnected && <FreelancerSection />}
         </Stack>
       </div>
     </MainLayout>

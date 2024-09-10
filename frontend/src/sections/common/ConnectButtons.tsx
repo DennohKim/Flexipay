@@ -26,21 +26,21 @@ export default function ConnectButtons() {
         variant="contained"
         size="large"
         onClick={() => {
-          dispatch(setRole('employee'))
+          dispatch(setRole('freelancer'))
           open({ view: 'Connect' })
         }}
       >
-        Employee
+        Freelancer
       </Button>
       <Button
         variant="contained"
         size="large"
         onClick={() => {
-          dispatch(setRole('employer'))
+          dispatch(setRole('Business Entity'))
           open({ view: 'Connect' })
         }}
       >
-        Employer
+        Business Entity
       </Button>
     </Box>
   )

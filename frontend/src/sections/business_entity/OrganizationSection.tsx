@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import Box from '@mui/material/Box'
 import { useQuery } from '@apollo/client'
 import { Button, Card, CardHeader, Stack, Typography } from '@mui/material'
-import { Address, Employee, Organization } from '@/state/types'
+import { Address, Freelancer, Organization } from '@/state/types'
 // @mui
 import IconButton from '@mui/material/IconButton'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
@@ -13,12 +13,12 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import Iconify from '@/components/iconify'
 import moment from 'moment'
 import { useBoolean } from '@/hooks/use-boolean'
-import AddEmployeeDialog from './AddEmployeeDialog'
+import AddFreelaDialog from './AddFreelancerDialog'
 import { useEffect, useMemo } from 'react'
 import { setOrganization } from '@/state/app'
 import { selectOrganization } from '@/state/selectors'
 import OrganizationTimeline from './OrganizationTimeLine'
-import { EMPLOYEE_ADDS, GET_EMPLOYEES, ORG_ADDED, ORG_FUNDED } from './graph-queries'
+import { FREELANCER_ADDS, GET_FREELANCERS, ORG_ADDED, ORG_FUNDED } from './graph-queries'
 import EnsName from '@/components/ens-name'
 import { formatEther } from 'viem'
 import { paySalary } from '@/services/write-services'
@@ -116,10 +116,10 @@ const columns: GridColDef[] = [
 ]
 
 type DataGridProps = {
-  data: Employee[]
+  data: Freelancer[]
 }
 
-export function EmployeeDataGrid({ data }: DataGridProps) {
+export function FreelancerDataGrid({ data }: DataGridProps) {
   return (
     <DataGrid
       columns={columns}
@@ -139,7 +139,7 @@ function OrganizationEvents({ address }: Props) {
   const dispatch = useAppDispatch()
   const org = useAppSelector(selectOrganization)
 
-  const { data: employeesAdded } = useQuery(EMPLOYEE_ADDS, {
+  const { data: freelancerAdded } = useQuery(FREELANCER_ADDS, {
     variables: {
       companyAddress: address,
     },
@@ -167,28 +167,28 @@ function OrganizationEvents({ address }: Props) {
         })
       }
     }
-    if (employeesAdded) {
-      for (const employee of employeesAdded.employeeAddeds) {
+    if (freelancerAdded) {
+      for (const Freelancer of freelancerAdded.FreelaAddeds) {
         results.push({
-          id: employee.id,
-          title: 'Employee Added',
-          time: employee.blockTimestamp,
+          id: Freelancer.id,
+          title: 'Freela Added',
+          time: Freelancer.blockTimestamp,
           type: 'order3',
         })
       }
     }
 
     return results.sort((a, b) => b.time - a.time)
-  }, [employeesAdded, orgAdded, orgFunded])
+  }, [freelancerAdded, orgAdded, orgFunded])
   return <OrganizationTimeline title="Events" subheader="the history" list={events} />
 }
 
 export default function OrganizationSection({ address }: Props) {
   const dispatch = useAppDispatch()
-  const newEmployeeDialog = useBoolean()
+  const newFreelancerDialog = useBoolean()
   const org = useAppSelector(selectOrganization)
 
-  const { data } = useQuery(GET_EMPLOYEES, {
+  const { data } = useQuery(GET_FREELANCERS, {
     variables: {
       companyAddress: address,
     },
@@ -196,24 +196,24 @@ export default function OrganizationSection({ address }: Props) {
 
   useEffect(() => {
     if (org && data) {
-      const employees = data.employees.map(
-        (employee: {
-          employeeAddress: any
+      const freelancer = data.freelancer.map(
+        (freelancer: {
+          freelancerAddress: any
           companyAddress: any
           activity: any
           dailyWageWei: any
           verified: any
           daysWorked: any
         }) => ({
-          address: employee.employeeAddress,
-          orgAddress: employee.companyAddress,
-          activity: employee.activity,
-          salary: Number(employee.dailyWageWei),
-          verified: employee.verified,
-          daysWorked: employee.daysWorked,
+          address: freelancer.freelancerAddress,
+          orgAddress: freelancer.companyAddress,
+          activity: freelancer.activity,
+          payout: Number(freelancer.dailyWageWei),
+          verified: freelancer.verified,
+          daysWorked: freelancer.daysWorked,
         }),
       )
-      dispatch(setOrganization({ ...org, employees }))
+      dispatch(setOrganization({ ...org, freelancer }))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, dispatch])
@@ -227,27 +227,27 @@ export default function OrganizationSection({ address }: Props) {
       <Stack sx={{ width: '100%' }} spacing={2}>
         <Card>
           <CardHeader
-            title="Employees"
+            title="freelancer"
             sx={{ mb: 2 }}
             action={
               <Button
                 variant="contained"
                 size="large"
                 sx={{ marginLeft: 'auto' }}
-                onClick={newEmployeeDialog.onTrue}
+                onClick={newFreelancerDialog.onTrue}
               >
-                New Employee
+                New Freela
               </Button>
             }
           />
 
           <Box sx={{ height: 390 }}>
-            <EmployeeDataGrid data={org.employees ?? []} />
+            <FreelancerDataGrid data={org.freelancer ?? []} />
           </Box>
         </Card>
         {org && <OrganizationEvents address={address} />}
       </Stack>
-      <AddEmployeeDialog organization={org} dialog={newEmployeeDialog} />
+      <AddFreelaDialog organization={org} dialog={newFreelancerDialog} />
     </>
   )
 }
